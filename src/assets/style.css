@@ -1,0 +1,11 @@
+/*
+ * File: assets/style.css
+ * Tambahan gaya kecil di luar daisyUI.
+ * (Tema "corporate" dari daisyUI sudah kalem dengan sudut kecil,
+ *  jadi file ini cukup berisi sedikit penyesuaian.)
+ */
+
+/* Alamat IP ditampilkan dengan huruf monospace agar mudah dibaca */
+.font-ip {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
