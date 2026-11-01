@@ -20,10 +20,11 @@ Project ini dibuat sebagai **bahan ajar untuk guru SMK jurusan Teknik Komputer d
 | PHP 8.4 (PHP-FPM) | Bahasa pemrograman, tanpa framework |
 | MySQL 8.0 | Database |
 | Nginx 1.27 | Web server |
-| Docker & Docker Compose | Menjalankan ketiga komponen di atas dalam container |
+| phpMyAdmin 5.2 | Antarmuka visual untuk mengelola database, diakses di port 8081 |
+| Docker & Docker Compose | Menjalankan keempat komponen di atas dalam container |
 | daisyUI + Tailwind CSS | Tampilan, dimuat lewat CDN (perlu koneksi internet) |
 
-Dengan Docker, **PHP, MySQL, dan Nginx tidak perlu diinstal satu per satu** di komputer. Cukup instal Docker, lalu semuanya berjalan otomatis.
+Dengan Docker, **PHP, MySQL, Nginx, dan phpMyAdmin tidak perlu diinstal satu per satu** di komputer. Cukup instal Docker, lalu semuanya berjalan otomatis.
 
 ---
 
@@ -34,7 +35,7 @@ Komputer yang dipakai perlu:
 1. **Docker Desktop** (Windows/macOS) atau **Docker Engine** (Linux)
    Unduh di https://www.docker.com/products/docker-desktop
 2. **Koneksi internet**, untuk mengunduh image Docker saat pertama kali dijalankan dan untuk memuat tampilan (CDN).
-3. **Port 8080 dan 3307** belum dipakai aplikasi lain.
+3. **Port 8080, 8081, dan 3307** belum dipakai aplikasi lain.
 
 Untuk memastikan Docker sudah terpasang, buka Terminal (macOS/Linux) atau PowerShell/Command Prompt (Windows), lalu ketik:
 
@@ -100,13 +101,14 @@ Proses pertama kali bisa memakan waktu beberapa menit karena Docker mengunduh im
 docker compose ps
 ```
 
-Harus ada 3 container yang berjalan:
+Harus ada 4 container yang berjalan:
 
 | Container | Fungsi |
 |-----------|--------|
 | `nginx_web` | Web server, bisa diakses di port 8080 |
 | `php_app` | Menjalankan kode PHP |
 | `mysql_db` | Database MySQL (status `healthy` artinya siap) |
+| `phpmyadmin` | Antarmuka visual untuk mengelola database, bisa diakses di port 8081 |
 
 ---
 
@@ -158,6 +160,24 @@ Aplikasi siap digunakan.
 
 ## Mengakses Database Secara Langsung
 
+**Lewat phpMyAdmin (Visual):**
+
+phpMyAdmin adalah alat berbasis web untuk mengelola database MySQL lewat antarmuka visual, tanpa perlu mengetik perintah SQL. Sangat cocok untuk siswa yang baru belajar database karena tabel dan datanya terlihat langsung dalam bentuk tabel yang bisa diklik.
+
+1. Pastikan container sudah berjalan (`docker compose up -d`).
+2. Buka browser dan akses: `http://localhost:8081`
+3. Login dengan:
+   - **Username**: `root`
+   - **Password**: `root_secret`
+
+Setelah login, siswa bisa:
+- Melihat daftar database, tabel `kategori` dan `perangkat`, serta isinya
+- Melakukan **Browse** untuk melihat baris-baris data
+- Menjalankan query lewat tab **SQL** (untuk mencoba perintah `SELECT`, `INSERT`, dll.)
+- Menambah atau mengubah data tanpa menulis kode PHP
+
+> phpMyAdmin terhubung langsung ke database `db` dari dalam jaringan Docker, jadi apa pun yang dilihat atau diubah di sini akan langsung berpengaruh pada aplikasi di `http://localhost:8080`.
+
 **Lewat terminal (MySQL di dalam container):**
 
 ```bash
@@ -192,7 +212,7 @@ Ketik `exit` untuk keluar.
 
 ```
 website-using-docker/
-├── docker-compose.yml          # Pengaturan 3 container (Nginx, PHP, MySQL)
+├── docker-compose.yml          # Pengaturan 4 container (Nginx, PHP, MySQL, phpMyAdmin)
 ├── Dockerfile.php              # Resep image PHP + ekstensi PDO MySQL
 ├── nginx.conf                  # Konfigurasi web server Nginx
 └── src/                        # Kode aplikasi
